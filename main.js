@@ -3,7 +3,7 @@ const MOVEMENT_SPEED = 0.1;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
-  75, // FOV
+  50, // FOV
   window.innerWidth / window.innerHeight, // Aspect ratio
   0.1, // Near
   1000, // Far
@@ -26,11 +26,15 @@ scene.add(light);
 scene.add(light.target);
 
 // Cube.
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshPhongMaterial({
-  color: 0xff0000,
-  shininess: 150,
+const loader = new THREE.TextureLoader();
+const texture = loader.load("/potato.jpg");
+texture.colorSpace = THREE.SRGBColorSpace;
+
+const material = new THREE.MeshBasicMaterial({
+  color: 0xffffff,
+  map: texture,
 });
+const geometry = new THREE.BoxGeometry(1, 1, 1);
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
