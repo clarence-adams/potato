@@ -1,5 +1,6 @@
 import * as THREE from "three";
 const MOVEMENT_SPEED = 0.1;
+const MOVEMENT = 1;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -40,35 +41,55 @@ scene.add(cube);
 
 camera.position.z = 5;
 
+let targetX = cube.position.x;
+let targetY = cube.position.y;
+
 addEventListener("keydown", (event) => {
   const key = event.key;
-  const positionAttribute = cube.geometry.getAttribute("position");
 
-  for (let i = 0; i < positionAttribute.count; i++) {
-    let x = positionAttribute.getX(i);
-    let y = positionAttribute.getY(i);
-    if (key === "ArrowUp") {
-      y += MOVEMENT_SPEED;
-      positionAttribute.setY(i, y);
-    } else if (key === "ArrowDown") {
-      y -= MOVEMENT_SPEED;
-      positionAttribute.setY(i, y);
-    } else if (key === "ArrowRight") {
-      x += MOVEMENT_SPEED;
-      positionAttribute.setX(i, x);
-    } else if (key === "ArrowLeft") {
-      x -= MOVEMENT_SPEED;
-      positionAttribute.setX(i, x);
-    }
+  let x = cube.position.x;
+  let y = cube.position.y;
+
+  if (key === "ArrowUp") {
+    targetY += MOVEMENT;
+  } else if (key === "ArrowDown") {
+    targetY -= MOVEMENT;
+  } else if (key === "ArrowRight") {
+    targetX += MOVEMENT;
+  } else if (key === "ArrowLeft") {
+    targetX -= MOVEMENT;
   }
-
-  cube.geometry.setAttribute("position", positionAttribute);
-  positionAttribute.needsUpdate = true;
 });
 
 function animate() {
-  // cube.rotation.x += 0.01;
-  // cube.rotation.y += 0.01;
+  updatePositions();
 
   renderer.render(scene, camera);
+}
+
+function updatePositions() {
+  let x = cube.position.x;
+  let y = cube.position.y;
+
+  if (x !== targetX && Math.abs(x - targetX) < MOVEMENT_SPEED) {
+    cube.position.x = targetX;
+    cube.position.needsUpdate = true;
+  } else if (x < targetX) {
+    cube.position.x += MOVEMENT_SPEED;
+    cube.position.needsUpdate = true;
+  } else if (x > targetX) {
+    cube.position.x -= MOVEMENT_SPEED;
+    cube.position.needsUpdate = true;
+  }
+
+  if (y !== targetY && Math.abs(y - targetY) < MOVEMENT_SPEED) {
+    cube.position.y = targetY;
+    cube.position.needsUpdate = true;
+  } else if (y < targetY) {
+    cube.position.y += MOVEMENT_SPEED;
+    cube.position.needsUpdate = true;
+  } else if (y > targetY) {
+    cube.position.y -= MOVEMENT_SPEED;
+    cube.position.needsUpdate = true;
+  }
 }
