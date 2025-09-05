@@ -1,6 +1,6 @@
 import * as THREE from "three";
 const MOVEMENT_SPEED = 0.1;
-const MOVEMENT = 1;
+const MOVEMENT = 0.5;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -39,14 +39,40 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
-camera.position.z = 5;
+camera.position.z = 6;
+
+let keyDown = false;
+let key = null;
+
+addEventListener("keydown", (event) => {
+  if (["ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
+    keyDown = true;
+    key = event.key;
+  }
+});
+
+addEventListener("keyup", (event) => {
+  if (["ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
+    keyDown = false;
+  }
+});
 
 let targetX = cube.position.x;
 let targetY = cube.position.y;
 
-addEventListener("keydown", (event) => {
-  const key = event.key;
+function animate() {
+  if (keyDown) {
+    updatePosition();
+  } else {
+    targetX = cube.position.x;
+    targetY = cube.position.y;
+  }
+  animatePositionUpdate();
 
+  renderer.render(scene, camera);
+}
+
+function updatePosition() {
   let x = cube.position.x;
   let y = cube.position.y;
 
@@ -59,15 +85,9 @@ addEventListener("keydown", (event) => {
   } else if (key === "ArrowLeft") {
     targetX -= MOVEMENT;
   }
-});
-
-function animate() {
-  updatePositions();
-
-  renderer.render(scene, camera);
 }
 
-function updatePositions() {
+function animatePositionUpdate() {
   let x = cube.position.x;
   let y = cube.position.y;
 
